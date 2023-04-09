@@ -1,0 +1,20 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:discount
+    username: sa
+    password: password
+    driverClassName: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: create
+
+limits:
+  lower: 50000
+  higher: 100000
+
+convert:
+  lowerLimitRatio: 50
+  betweenLimitRatio: 40
+  higherLimitRatio: 30
+  pointsToMoneyRatio: 10
