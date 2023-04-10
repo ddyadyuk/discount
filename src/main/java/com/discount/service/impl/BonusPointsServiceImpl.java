@@ -1,12 +1,11 @@
 package com.discount.service.impl;
 
-import com.discount.configuration.ConversionRatiosConfiguration;
-import com.discount.configuration.LimitsConfiguration;
 import com.discount.dao.model.Client;
 import com.discount.dao.model.ReceiptPosition;
 import com.discount.dao.repository.ClientRepository;
 import com.discount.dto.BonusPointsResponse;
 import com.discount.dto.WithdrawPointsDto;
+import com.discount.exception.IncorrectWithdrawalAmountException;
 import com.discount.service.BonusPointsService;
 import com.discount.service.ConversionService;
 import lombok.RequiredArgsConstructor;
@@ -23,8 +22,6 @@ import java.math.BigDecimal;
 public class BonusPointsServiceImpl implements BonusPointsService {
 
     private final ClientRepository clientRepository;
-    private final LimitsConfiguration limitsConfiguration;
-    private final ConversionRatiosConfiguration configuration;
     private final ConversionService conversionService;
 
 
@@ -81,7 +78,7 @@ public class BonusPointsServiceImpl implements BonusPointsService {
                 conversionService.convertToBonusPoints(receiptsGrandTotal, unprocessedClientReceiptAmount);
 
         client.setDiscountPoints(client.getDiscountPoints().add(discountPointsToAdd));
-        //ToDo: verify that Receipt Positions were updated
+
         client.getReceipts().stream().flatMap(r -> r.getReceiptPositions().stream())
                 .filter(rp -> Boolean.FALSE.equals(rp.getIsProcessed()))
                 .forEach(rp -> rp.setIsProcessed(Boolean.TRUE));
@@ -91,7 +88,7 @@ public class BonusPointsServiceImpl implements BonusPointsService {
         if (discountPoints.subtract(amount).compareTo(BigDecimal.ZERO) < 0) {
             log.warn("Specified withdrawal amount: {} is greater that available amount: {} ", amount, discountPoints);
 
-            throw new IllegalStateException(
+            throw new IncorrectWithdrawalAmountException(
                     String.format("Withdrawal amount is too high, available %s discount points", discountPoints));
         }
     }

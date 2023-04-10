@@ -20,13 +20,15 @@ public class ClientServiceImpl implements ClientService {
     private final ClientRepository clientRepository;
 
     @Override
-    public void addClient(ClientRequestDto client) {
+    public Long save(ClientRequestDto client) {
         Client clientModel = new Client();
         clientModel.setCardNumber(client.getCardNumber());
         clientModel.setDiscountPoints(BigDecimal.ZERO);
 
         Client savedClient = clientRepository.save(clientModel);
         log.info("Client with id: {} was saved", savedClient.getId());
+
+        return savedClient.getId();
     }
 
     @Override

@@ -3,7 +3,6 @@ package com.discount.controller.impl;
 import com.discount.controller.ClientController;
 import com.discount.dto.ClientRequestDto;
 import com.discount.service.ClientService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -20,11 +19,10 @@ public class ClientControllerImpl implements ClientController {
 
     private final ClientService clientService;
 
-    //TODO: return Id?
     @Override
     @PostMapping
-    public void addClient(@RequestBody @Valid ClientRequestDto client) {
-        clientService.addClient(client);
+    public void addClient(@RequestBody @Validated ClientRequestDto client) {
+        clientService.save(client);
     }
 
     @Override

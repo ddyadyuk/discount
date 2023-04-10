@@ -30,8 +30,7 @@ public class Client {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    //todo: add validation
-    @Column(name = "card_number")
+    @Column(name = "card_number", length = 20)
     private String cardNumber;
 
     @Column(name = "discount_points")

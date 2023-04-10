@@ -4,6 +4,7 @@ import com.discount.controller.ReceiptController;
 import com.discount.dto.ReceiptDto;
 import com.discount.service.ReceiptService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +23,7 @@ public class ReceiptControllerImpl implements ReceiptController {
 
     @Override
     @PostMapping
-    public void addNewReceipt(@RequestBody ReceiptDto receiptDto) {
+    public void addNewReceipt(@RequestBody @Validated ReceiptDto receiptDto) {
         receiptService.save(receiptDto);
     }
 

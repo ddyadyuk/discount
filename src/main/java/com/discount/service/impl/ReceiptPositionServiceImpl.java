@@ -25,6 +25,8 @@ public class ReceiptPositionServiceImpl implements ReceiptPositionService {
                                                          .collect(Collectors.toSet()));
     }
 
+    // todo: due to short amount of time mapping logic was put in here
+    // ideally we should use libraries like MapStruct to do the mapping
     private ReceiptPosition mapToReceiptPosition(ReceiptPositionDto rp) {
         ReceiptPosition receiptPosition = new ReceiptPosition();
 

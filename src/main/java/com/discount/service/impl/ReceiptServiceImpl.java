@@ -44,7 +44,6 @@ public class ReceiptServiceImpl implements ReceiptService {
         //Save the Receipt
         receiptRepository.saveAndFlush(receiptModel);
         //Recalculate user bonus points
-        //TODO: verify that receipt being saved prior this operation. Receipt was saved but client
         bonusPointsService.recalculateBonusPoints(client.getId());
     }
 
@@ -56,7 +55,6 @@ public class ReceiptServiceImpl implements ReceiptService {
     }
 
     private ReceiptDto mapToReceiptDto(Receipt receipt) {
-        //todo: possible npe
         ReceiptDto receiptDto = new ReceiptDto();
         receiptDto.setClientId(receipt.getClient().getId());
 
