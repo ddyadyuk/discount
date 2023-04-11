@@ -35,7 +35,6 @@ public class BonusPointsServiceImpl implements BonusPointsService {
 
         BigDecimal moneyToWithdraw = conversionService.convertToMoney(withdrawPointsDto.getAmount());
 
-        //todo: add mapper
         BonusPointsResponse bonusPointsResponse = new BonusPointsResponse();
         bonusPointsResponse.setWithdrawnPoints(withdrawPointsDto.getAmount());
         bonusPointsResponse.setWithdrawnMoney(moneyToWithdraw);
@@ -49,7 +48,6 @@ public class BonusPointsServiceImpl implements BonusPointsService {
     public BonusPointsResponse getAvailablePoints(Long clientId) {
         Client clientModel = clientRepository.findClientById(clientId);
 
-        //todo: add mapper
         BonusPointsResponse bonusPointsResponse = new BonusPointsResponse();
         bonusPointsResponse.setAvailablePoints(clientModel.getDiscountPoints());
 
@@ -73,7 +71,6 @@ public class BonusPointsServiceImpl implements BonusPointsService {
                 .map(ReceiptPosition::getPrice)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
-        // Calculate earned discount points based on the unprocessed Receipt Positions amounts
         BigDecimal discountPointsToAdd =
                 conversionService.convertToBonusPoints(receiptsGrandTotal, unprocessedClientReceiptAmount);
 

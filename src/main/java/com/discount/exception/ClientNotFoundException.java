@@ -3,9 +3,9 @@ package com.discount.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-public class UserIsMissingException extends RuntimeException {
-    public UserIsMissingException(String message) {
+@ResponseStatus(HttpStatus.BAD_REQUEST)
+public class ClientNotFoundException extends RuntimeException {
+    public ClientNotFoundException(String message) {
         super(message);
     }
 }

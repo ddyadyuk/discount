@@ -1,17 +1,17 @@
-package com.discount.configuration;
+package com.discount.properties;
 
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 
 @Getter
 @Setter
-@Configuration
+@Component
 @ConfigurationProperties("limits")
-public class LimitsConfiguration {
+public class LimitsProperties {
 
     private BigDecimal lower;
     private BigDecimal higher;

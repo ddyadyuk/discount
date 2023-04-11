@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -37,13 +36,11 @@ public class ReceiptServiceImpl implements ReceiptService {
         Client client = clientRepository.findClientById(receiptDto.getClientId());
 
         Receipt receiptModel = new Receipt();
-        // link together receipt and receipt positions
         receiptModel.setReceiptPositions(receiptPositionService.save(receiptDto.getReceiptPositions()));
-        // link together receipt and client
         client.addReceipt(receiptModel);
-        //Save the Receipt
+
         receiptRepository.saveAndFlush(receiptModel);
-        //Recalculate user bonus points
+
         bonusPointsService.recalculateBonusPoints(client.getId());
     }
 

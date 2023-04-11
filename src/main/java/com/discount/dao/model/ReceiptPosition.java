@@ -7,9 +7,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 
@@ -17,7 +15,6 @@ import java.math.BigDecimal;
 @Table(name = "receipt_position")
 @Getter
 @Setter
-@RequiredArgsConstructor
 public class ReceiptPosition {
 
     @Id
@@ -27,5 +24,6 @@ public class ReceiptPosition {
     @Column(name = "price")
     private BigDecimal price;
 
+    @Column(name = "processed")
     private Boolean isProcessed;
 }

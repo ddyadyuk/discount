@@ -20,7 +20,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -39,9 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         classes = DiscountApplication.class)
 @AutoConfigureMockMvc
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
-@TestPropertySource(
-        locations = "classpath:application-integrationtest.yml")
-class BonusPointsControllerImplIntegrationTest {
+class BonusPointsControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -57,7 +54,7 @@ class BonusPointsControllerImplIntegrationTest {
         Long clientId = setupClientWithReceipts(BigDecimal.valueOf(20_000));
 
         WithdrawPointsDto withdrawPointsDto = getValidWithdrawPointsDto(clientId, BigDecimal.valueOf(100));
-        mockMvc.perform(post("/api/points/withdraw")
+        mockMvc.perform(post("/api/points")
                                 .content(new ObjectMapper().writeValueAsString(withdrawPointsDto))
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -71,7 +68,7 @@ class BonusPointsControllerImplIntegrationTest {
         Long clientId = setupClientWithReceipts(BigDecimal.valueOf(20_000));
 
         WithdrawPointsDto withdrawPointsDto = getValidWithdrawPointsDto(clientId, BigDecimal.valueOf(100));
-        mockMvc.perform(post("/api/points/withdraw")
+        mockMvc.perform(post("/api/points")
                                 .content(new ObjectMapper().writeValueAsString(withdrawPointsDto))
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -81,21 +78,21 @@ class BonusPointsControllerImplIntegrationTest {
     }
 
     @Test
-    void withdrawPoints_whenWithdrawPointsDtoHasIncorrectAmount_thenStatus500() throws Exception {
+    void withdrawPoints_whenWithdrawPointsDtoHasIncorrectAmount_thenStatus400() throws Exception {
         Long clientId = setupClientWithReceipts(BigDecimal.valueOf(20_000));
 
         WithdrawPointsDto withdrawPointsDto = getValidWithdrawPointsDto(clientId, BigDecimal.valueOf(500));
-        mockMvc.perform(post("/api/points/withdraw")
+        mockMvc.perform(post("/api/points")
                                 .content(new ObjectMapper().writeValueAsString(withdrawPointsDto))
                                 .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isInternalServerError());
+                .andExpect(status().isBadRequest());
     }
 
     @Test
     void withdrawPoints_whenWithdrawPointsDtoIsIncorrect_thenStatus422() throws Exception {
         WithdrawPointsDto withdrawPointsDto = new WithdrawPointsDto();
 
-        mockMvc.perform(post("/api/points/withdraw")
+        mockMvc.perform(post("/api/points")
                                 .content(new ObjectMapper().writeValueAsString(withdrawPointsDto))
                                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().is(HttpStatus.UNPROCESSABLE_ENTITY.value()));
@@ -112,9 +109,9 @@ class BonusPointsControllerImplIntegrationTest {
     }
 
     @Test
-    void getAvailablePoints_whenUserIsNotPresent_thenStatus500() throws Exception {
+    void getAvailablePoints_whenUserIsNotPresent_thenStatus400() throws Exception {
         mockMvc.perform(get("/api/points?clientId={clientId}", 1))
-                .andExpect(status().isInternalServerError());
+                .andExpect(status().isBadRequest());
     }
 
     private Long setupClientWithReceipts(BigDecimal receiptTotalGrand) {

@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.http.HttpStatus;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -18,8 +18,7 @@ import java.util.Objects;
 public class ErrorResponse {
     private final HttpStatus status;
     private final String message;
-    private String stackTrace;
-    private final LocalDateTime happenedAt;
+    private final Instant happenedAt;
     private List<ValidationError> errors;
 
     private record ValidationError(String field, String message) {

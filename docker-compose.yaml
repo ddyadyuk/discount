@@ -8,5 +8,5 @@ services:
       - "8000-8020:8080"
     deploy:
       mode: replicated
-      replicas: 4
+      replicas: 5
 #Add DB configuration instead of using in-memory DB

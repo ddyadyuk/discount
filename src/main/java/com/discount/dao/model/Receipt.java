@@ -1,6 +1,7 @@
 package com.discount.dao.model;
 
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,9 +14,8 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "receipt")
@@ -28,14 +28,8 @@ public class Receipt {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-//
-//    @Column(name = "grand_total")
-//    private BigDecimal grandTotal;
-
-    //TODO: verify that receiptPositions are set
-    @OneToMany(orphanRemoval = true)
-    @JoinColumn(name = "receipt_id")
-    private List<ReceiptPosition> receiptPositions;
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.REMOVE)
+    private List<ReceiptPosition> receiptPositions = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "client_id", referencedColumnName = "client_id")
