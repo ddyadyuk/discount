@@ -93,21 +93,17 @@ class BonusPointsServiceImplTest {
         Client client = getConfiguredClient(BigDecimal.ZERO);
 
         BigDecimal calculatedBonusPoints = BigDecimal.ONE;
+        BigDecimal receiptTotal = BigDecimal.ONE;
 
-        Receipt newReceipt = getConfiguredReceipt(false, BigDecimal.valueOf(20_000));
+        Receipt newReceipt = getConfiguredReceipt(BigDecimal.valueOf(20_000));
         client.getReceipts().add(newReceipt);
 
-        when(clientRepository.findClientById(any())).thenReturn(client);
         when(conversionService.convertToBonusPoints(any(), any())).thenReturn(calculatedBonusPoints);
 
-        bonusPointsService.recalculateBonusPoints(1L);
+        bonusPointsService.recalculateBonusPoints(client, receiptTotal);
 
         assertNotNull(client.getDiscountPoints());
         assertEquals(calculatedBonusPoints, client.getDiscountPoints());
-        assertEquals(0, client.getReceipts().stream()
-                .flatMap(r -> r.getReceiptPositions().stream())
-                .filter(rp -> Boolean.FALSE.equals(rp.getIsProcessed()))
-                .count());
     }
 
     private WithdrawPointsDto getConfiguredWithdrawPointsDto(BigDecimal amount) {
@@ -126,10 +122,9 @@ class BonusPointsServiceImplTest {
         return client;
     }
 
-    private static Receipt getConfiguredReceipt(Boolean isProcessed, BigDecimal amount) {
+    private static Receipt getConfiguredReceipt(BigDecimal amount) {
         ReceiptPosition receiptPosition = new ReceiptPosition();
         receiptPosition.setPrice(amount);
-        receiptPosition.setIsProcessed(isProcessed);
 
         Receipt receipt = new Receipt();
         receipt.setReceiptPositions(List.of(receiptPosition));

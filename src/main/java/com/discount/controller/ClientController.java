@@ -19,8 +19,8 @@ public class ClientController {
     private final ClientService clientService;
 
     @PostMapping
-    public void addClient(@RequestBody @Validated ClientRequestDto client) {
-        clientService.save(client);
+    public Long addClient(@RequestBody @Validated ClientRequestDto client) {
+        return clientService.save(client);
     }
 
     @DeleteMapping("/{clientId}")

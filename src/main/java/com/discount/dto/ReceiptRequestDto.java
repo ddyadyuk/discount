@@ -5,13 +5,10 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.util.List;
-
 @Getter
 @Setter
 @ToString
-public class ReceiptDto {
-
+public class ReceiptRequestDto extends ReceiptDto {
     @NotNull
-    private List<ReceiptPositionDto> receiptPositions;
+    private Long clientId;
 }

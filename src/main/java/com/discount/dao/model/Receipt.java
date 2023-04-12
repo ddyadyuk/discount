@@ -9,6 +9,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.NamedAttributeNode;
+import jakarta.persistence.NamedEntityGraph;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Getter;
@@ -21,6 +23,7 @@ import java.util.List;
 @Table(name = "receipt")
 @Getter
 @Setter
+@NamedEntityGraph(name = "receipt_entity_graph", attributeNodes = @NamedAttributeNode("receiptPositions"))
 public class Receipt {
 
     @Id
@@ -28,10 +31,15 @@ public class Receipt {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(orphanRemoval = true, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "receipt", orphanRemoval = true, cascade = CascadeType.REMOVE)
     private List<ReceiptPosition> receiptPositions = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name = "client_id", referencedColumnName = "client_id")
     private Client client;
+
+    public void addPosition(ReceiptPosition receiptPosition) {
+        this.receiptPositions.add(receiptPosition);
+        receiptPosition.setReceipt(this);
+    }
 }

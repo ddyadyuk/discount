@@ -8,6 +8,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Version;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -31,6 +32,9 @@ public class Client {
 
     @Column(name = "discount_points")
     private BigDecimal discountPoints;
+
+    @Column(name = "grand_total")
+    private BigDecimal grandTotal;
 
     @OneToMany(mappedBy = "client", orphanRemoval = true, cascade = CascadeType.REMOVE)
     private List<Receipt> receipts = new ArrayList<>();

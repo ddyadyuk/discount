@@ -1,7 +1,6 @@
 package com.discount.service.impl;
 
 import com.discount.dao.model.Client;
-import com.discount.dao.model.ReceiptPosition;
 import com.discount.dao.repository.ClientRepository;
 import com.discount.dto.BonusPointsResponse;
 import com.discount.dto.WithdrawPointsDto;
@@ -27,6 +26,8 @@ public class BonusPointsServiceImpl implements BonusPointsService {
 
     @Override
     public BonusPointsResponse withdrawPoints(WithdrawPointsDto withdrawPointsDto) {
+        log.info("Withdrawing points for client id = [{}] and amount = [{}]", withdrawPointsDto.getClientId(),
+                 withdrawPointsDto.getAmount());
         Client client = clientRepository.findClientById(withdrawPointsDto.getClientId());
 
         verifyWithdrawalAmount(client.getDiscountPoints(), withdrawPointsDto.getAmount());
@@ -46,6 +47,7 @@ public class BonusPointsServiceImpl implements BonusPointsService {
     @Override
     @Transactional(readOnly = true)
     public BonusPointsResponse getAvailablePoints(Long clientId) {
+        log.info("Getting available points for client id = [{}]", clientId);
         Client clientModel = clientRepository.findClientById(clientId);
 
         BonusPointsResponse bonusPointsResponse = new BonusPointsResponse();
@@ -55,30 +57,14 @@ public class BonusPointsServiceImpl implements BonusPointsService {
     }
 
     @Override
-    public void recalculateBonusPoints(Long clientId) {
-        Client client = clientRepository.findClientById(clientId);
-
-        // Get unprocessed money amount that should be recalculated and added to the bonus points
-        BigDecimal unprocessedClientReceiptAmount = client.getReceipts().stream()
-                .flatMap(r -> r.getReceiptPositions().stream())
-                .filter(rp -> Boolean.FALSE.equals(rp.getIsProcessed()))
-                .map(ReceiptPosition::getPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-
-        //Get grand total amount for all Receipts
-        BigDecimal receiptsGrandTotal = client.getReceipts().stream()
-                .flatMap(r -> r.getReceiptPositions().stream())
-                .map(ReceiptPosition::getPrice)
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    public void recalculateBonusPoints(Client client, BigDecimal receiptTotal) {
+        log.info("Recalculating bonus points for client id = [{}]", client.getId());
 
         BigDecimal discountPointsToAdd =
-                conversionService.convertToBonusPoints(receiptsGrandTotal, unprocessedClientReceiptAmount);
+                conversionService.convertToBonusPoints(client.getGrandTotal(), receiptTotal);
 
         client.setDiscountPoints(client.getDiscountPoints().add(discountPointsToAdd));
-
-        client.getReceipts().stream().flatMap(r -> r.getReceiptPositions().stream())
-                .filter(rp -> Boolean.FALSE.equals(rp.getIsProcessed()))
-                .forEach(rp -> rp.setIsProcessed(Boolean.TRUE));
+        log.info("User with id {} has {} points", client.getId(), client.getDiscountPoints());
     }
 
     private void verifyWithdrawalAmount(BigDecimal discountPoints, BigDecimal amount) {

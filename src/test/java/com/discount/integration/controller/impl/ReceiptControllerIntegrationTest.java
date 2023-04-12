@@ -4,6 +4,7 @@ import com.discount.DiscountApplication;
 import com.discount.dto.ClientRequestDto;
 import com.discount.dto.ReceiptDto;
 import com.discount.dto.ReceiptPositionDto;
+import com.discount.dto.ReceiptRequestDto;
 import com.discount.service.ClientService;
 import com.discount.service.ReceiptService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -48,7 +49,7 @@ class ReceiptControllerIntegrationTest {
     @Test
     void addNewReceipt_whenClientRequestDtoIsValid_thenStatus200() throws Exception {
         Long clientId = setupClient();
-        ReceiptDto receiptDto = getValidReceiptDto(clientId, BigDecimal.valueOf(20_000));
+        ReceiptRequestDto receiptDto = getValidReceiptDto(clientId, BigDecimal.valueOf(20_000));
 
         mockMvc.perform(post("/api/receipts")
                                 .content(new ObjectMapper().writeValueAsString(receiptDto))
@@ -70,7 +71,7 @@ class ReceiptControllerIntegrationTest {
 
         mockMvc.perform(get("/api/receipts?clientId={clientId}", clientId))
                 .andExpect(status().isOk())
-                .andExpect(content().json("[{\"clientId\":1,\"receiptPositions\":[{\"amount\":55000.00}]}]"));
+                .andExpect(content().json("[{\"receiptPositions\":[{\"amount\":55000.00}]}]"));
     }
 
     @Test
@@ -80,13 +81,13 @@ class ReceiptControllerIntegrationTest {
                 .andExpect(content().json("[]"));
     }
 
-    private ReceiptDto getValidReceiptDto(Long clientId, BigDecimal receiptPositionAmount) {
+    private ReceiptRequestDto getValidReceiptDto(Long clientId, BigDecimal receiptPositionAmount) {
         ReceiptPositionDto receiptPositionDto = new ReceiptPositionDto();
         receiptPositionDto.setAmount(receiptPositionAmount);
 
-        ReceiptDto receiptDto = new ReceiptDto();
-        receiptDto.setClientId(clientId);
+        ReceiptRequestDto receiptDto = new ReceiptRequestDto();
         receiptDto.setReceiptPositions(List.of(receiptPositionDto));
+        receiptDto.setClientId(clientId);
 
         return receiptDto;
     }
@@ -100,7 +101,7 @@ class ReceiptControllerIntegrationTest {
 
     private Long setupClientWithReceipts(BigDecimal receiptTotalGrand) {
         Long clientId = setupClient();
-        ReceiptDto receiptDto = new ReceiptDto();
+        ReceiptRequestDto receiptDto = new ReceiptRequestDto();
         receiptDto.setClientId(clientId);
         receiptDto.setReceiptPositions(List.of(new ReceiptPositionDto(receiptTotalGrand)));
 

@@ -21,9 +21,12 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public Long save(ClientRequestDto client) {
+        log.info("Saving new client");
+
         Client clientModel = new Client();
         clientModel.setCardNumber(client.getCardNumber());
         clientModel.setDiscountPoints(BigDecimal.ZERO);
+        clientModel.setGrandTotal(BigDecimal.ZERO);
 
         Client savedClient = clientRepository.save(clientModel);
         log.info("Client with id: {} was saved", savedClient.getId());
@@ -33,6 +36,7 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public void removeClient(Long clientId) {
+        log.info("Removing client by id = [{}]", clientId);
         clientRepository.deleteById(clientId);
     }
 }

@@ -5,24 +5,24 @@ import com.discount.dao.repository.ReceiptPositionRepository;
 import com.discount.dto.ReceiptPositionDto;
 import com.discount.service.ReceiptPositionService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 @Transactional
+@Slf4j
 public class ReceiptPositionServiceImpl implements ReceiptPositionService {
 
     private final ReceiptPositionRepository receiptPositionRepository;
 
     @Override
-    public List<ReceiptPosition> save(List<ReceiptPositionDto> receiptPositions) {
-        return receiptPositionRepository.saveAll(receiptPositions.stream()
-                                                         .map(this::mapToReceiptPosition)
-                                                         .collect(Collectors.toSet()));
+    public ReceiptPosition save(ReceiptPositionDto receiptPosition) {
+        log.info("Saving receipt position = [{}]", receiptPosition);
+        ReceiptPosition model = mapToReceiptPosition(receiptPosition);
+
+        return receiptPositionRepository.save(model);
     }
 
     // todo: due to short amount of time mapping logic was put in here
@@ -31,7 +31,6 @@ public class ReceiptPositionServiceImpl implements ReceiptPositionService {
         ReceiptPosition receiptPosition = new ReceiptPosition();
 
         receiptPosition.setPrice(rp.getAmount());
-        receiptPosition.setIsProcessed(Boolean.FALSE);
 
         return receiptPosition;
     }

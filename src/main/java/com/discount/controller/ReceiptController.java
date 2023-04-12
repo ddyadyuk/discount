@@ -1,6 +1,7 @@
 package com.discount.controller;
 
 import com.discount.dto.ReceiptDto;
+import com.discount.dto.ReceiptRequestDto;
 import com.discount.service.ReceiptService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
@@ -21,7 +22,7 @@ public class ReceiptController {
     private final ReceiptService receiptService;
 
     @PostMapping
-    public void addNewReceipt(@RequestBody @Validated ReceiptDto receiptDto) {
+    public void addNewReceipt(@RequestBody @Validated ReceiptRequestDto receiptDto) {
         receiptService.save(receiptDto);
     }
 

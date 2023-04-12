@@ -2,8 +2,8 @@ package com.discount.integration.controller.impl;
 
 import com.discount.DiscountApplication;
 import com.discount.dto.ClientRequestDto;
-import com.discount.dto.ReceiptDto;
 import com.discount.dto.ReceiptPositionDto;
+import com.discount.dto.ReceiptRequestDto;
 import com.discount.dto.WithdrawPointsDto;
 import com.discount.service.BonusPointsService;
 import com.discount.service.ClientService;
@@ -117,13 +117,12 @@ class BonusPointsControllerIntegrationTest {
     private Long setupClientWithReceipts(BigDecimal receiptTotalGrand) {
         ClientRequestDto clientRequestDto = new ClientRequestDto();
         clientRequestDto.setCardNumber("12345561");
-        // Create user
         Long clientId = clientService.save(clientRequestDto);
 
-        ReceiptDto receiptDto = new ReceiptDto();
+        ReceiptRequestDto receiptDto = new ReceiptRequestDto();
         receiptDto.setClientId(clientId);
         receiptDto.setReceiptPositions(List.of(new ReceiptPositionDto(receiptTotalGrand)));
-        // Add receipts
+
         receiptService.save(receiptDto);
 
         return clientId;
